@@ -4,7 +4,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -214,13 +216,17 @@ namespace Microsoft.AspNetCore.Mvc
         /// controller action names.
         /// <para>
         /// When <see langword="true"/>, MVC will strip action names of the Async suffix.
-        /// Action names are used for routing as well as view lookup. For example, the action
-        /// action <c>ProductsController.ListProductsAsync</c> will be routeable at <c>/Products/ListProducts</c>
+        /// <see cref="ControllerActionDescriptor.ActionName"/> is used to construct the route to the action as 
+        /// well as in view lookup. For example, the action <c>ProductsController.ListProductsAsync</c> will 
+        /// be routeable at <c>/Products/ListProducts</c>
         /// with views looked up at <c>/Views/Products/ListProducts.cshtml</c>.
+        /// </para>
+        /// <para>
+        /// This option does not affect values specified using using <see cref="ActionNameAttribute"/>.
         /// </para>
         /// </summary>
         /// <value>
-        /// The default value is <c>true</c>.
+        /// The default value is <see langword="true"/>.
         /// </value>
         public bool SuppressAsyncSuffixInActionNames { get; set; } = true;
 

@@ -22,7 +22,6 @@ namespace Microsoft.AspNetCore.Mvc.ApplicationModels
         private readonly IModelMetadataProvider _modelMetadataProvider;
         private readonly Func<ActionContext, bool> _supportsAllRequests;
         private readonly Func<ActionContext, bool> _supportsNonGetRequests;
-        private readonly List<IActionModelConvention> _actionModelConventions;
 
         public DefaultApplicationModelProvider(
             IOptions<MvcOptions> mvcOptionsAccessor,
@@ -33,12 +32,6 @@ namespace Microsoft.AspNetCore.Mvc.ApplicationModels
 
             _supportsAllRequests = _ => true;
             _supportsNonGetRequests = context => !string.Equals(context.HttpContext.Request.Method, "GET", StringComparison.OrdinalIgnoreCase);
-
-            _actionModelConventions = new List<IActionModelConvention>();
-            if (_mvcOptions.SuppressAsyncSuffixInActionNames)
-            {
-                _actionModelConventions.Add(new SuppressAsyncSuffixInActionNameConvention());
-            }
         }
 
         /// <inheritdoc />
@@ -98,11 +91,6 @@ namespace Microsoft.AspNetCore.Mvc.ApplicationModels
                             parameterModel.Action = actionModel;
                             actionModel.Parameters.Add(parameterModel);
                         }
-                    }
-
-                    foreach (var convention in _actionModelConventions)
-                    {
-                        convention.Apply(actionModel);
                     }
                 }
             }
@@ -308,7 +296,7 @@ namespace Microsoft.AspNetCore.Mvc.ApplicationModels
             }
             else
             {
-                actionModel.ActionName = methodInfo.Name;
+                actionModel.ActionName = CanonicalizeActionName(methodInfo.Name);
             }
 
             var apiVisibility = attributes.OfType<IApiDescriptionVisibilityProvider>().FirstOrDefault();
@@ -381,6 +369,19 @@ namespace Microsoft.AspNetCore.Mvc.ApplicationModels
             AddRange(actionModel.Selectors, CreateSelectors(applicableAttributes));
 
             return actionModel;
+        }
+
+        private string CanonicalizeActionName(string actionName)
+        {
+            const string Suffix = "Async";
+
+            if (_mvcOptions.SuppressAsyncSuffixInActionNames &&
+                actionName.EndsWith(Suffix, StringComparison.Ordinal))
+            {
+                actionName = actionName.Substring(0, actionName.Length - Suffix.Length);
+            }
+
+            return actionName;
         }
 
         /// <summary>
