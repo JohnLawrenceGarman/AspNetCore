@@ -9,9 +9,9 @@
       "longName": "no-restore",
       "shortName": ""
     },
-    "SupportPagesAndViews": {
-      "longName": "support-pages-and-views",
-      "shortName": "s"
+    "NoPagesAndViews": {
+      "longName": "no-pages-and-views",
+      "shortName": "npv"
     }
   }
 }

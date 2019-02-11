@@ -23,7 +23,7 @@
   "sources": [
     {
       "modifiers": [{
-        "condition": "(!SupportPagesAndViews)",
+        "condition": "(NoPagesAndViews)",
         "exclude": [
           "Areas/**"
         ]
@@ -53,7 +53,7 @@
       "description": "If specified, skips the automatic restore of the project on create.",
       "defaultValue": "false"
     },
-    "SupportPagesAndViews": {
+    "NoPagesAndViews": {
       "type": "parameter",
       "datatype": "bool",
       "defaultValue": "false",
